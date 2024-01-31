@@ -2,11 +2,13 @@ package com.vikas.userprofile
 
 import android.util.Log
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
 class FireBaseRepo {
     val dataBase = Firebase.firestore
+
 
     fun sendData(
         name: String,
@@ -31,41 +33,62 @@ class FireBaseRepo {
 
     }
 
+    suspend fun sendMessage(message: Message, groupId: String, groupIdReverse : String) {
+        val doc = dataBase.collection("Chat")
+            .document(groupId)
+            .get()
+            .await()
 
+        val doc2 = dataBase.collection("Chat")
+            .document(groupIdReverse)
+            .get()
+            .await()
 
+        if (doc.exists()) {
+            dataBase.collection("Chat")
+                .document(groupId)
+                .update("messagelist", FieldValue.arrayUnion(message))
+        }
+        else if (doc2.exists()){
+            dataBase.collection("Chat")
+                .document(groupIdReverse)
+                .update("messagelist", FieldValue.arrayUnion(message))
+        }
+    }
 
-//    suspend fun fatchData(mobile: String): List<Profile> {
-////        var profile: Profile? = Profile()
-//        return dataBase.collection("Users")
-////            .document("${Profile()}")
-//            .get()
-////        .addOnSuccessListener {
-//////            if (document != null) {
-//////            Log.d("ABC", "DocumentSnapshot Fetch successfully ! ${it.documents.size}")
-////                //profile = document.getData()
-//////            } else {
-//////                Log.e("FBA", "Data is Null")
-////            }
-//            //document.data.toString()
-////        .addOnFailureListener {
-////                e -> Log.w("ABCD", "Error writing document", e) }
-////             .await()
-////            .toObjects(Profile::class.java)
-//
-////        Log.e("FBB", profile.toString())
-////        : List<Profile>
-////        return  dataBase.collection("Users")
-////            .get()
-////            .addOnSuccessListener {
-////                    Log.d("ABC", "DocumentSnapshot data: ${it.documents.size}")
-////            }
-////            .addOnFailureListener { exception ->
-////                Log.d("ABCDE", "get failed with ", exception)
-////            }
-////            .await()
-//            .toObjects(Profile::class.java)
-////    }
-//
-//    }
+    suspend fun getMessage(groupId: String, groupIdReverse: String) : ArrayOfMessage?  {
+
+        val doc = dataBase.collection("Chat")
+            .document(groupId)
+            .get()
+            .await()
+
+        val doc2 = dataBase.collection("Chat")
+            .document()
+            .get()
+            .await()
+        if (doc.exists()){
+            return dataBase.collection("Chat")
+                .document(groupId)
+                .get()
+                .addOnSuccessListener {document ->
+                    Log.e("success", document.toString())
+                    Log.e("success", document.data?.values.toString())
+                }
+                .await()
+                .toObject(ArrayOfMessage::class.java)
+        }
+        else{
+            return dataBase.collection("Chat")
+                .document(groupIdReverse)
+                .get()
+                .addOnSuccessListener { document ->
+                    Log.e("success", document.toString())
+                    Log.e("success", document.data?.values.toString())
+                }
+                .await()
+                .toObject(ArrayOfMessage::class.java)
+        }
+    }
 }
 

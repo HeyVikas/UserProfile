@@ -23,12 +23,16 @@ fun chatScreen(mainViewModel: MainViewModel) {
         ) {
             TextField(value = mainViewModel.text.value,
                 onValueChange = {
-                    mainViewModel.text.value = it },
+                    mainViewModel.text.value = it
+                                mainViewModel.msg.value = mainViewModel.text.value},
                 label = { Text(text = "Text" )}
             )
 
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = {mainViewModel.sendmessage()
+            mainViewModel.text.value = ""}) {
                 Text(text = "Send")
             }
         }
+
+
     }

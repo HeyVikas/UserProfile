@@ -1,7 +1,9 @@
 package com.vikas.userprofile
 
-data class ChatClass(
-    var magStore: String = ""
+data class Message(
+    var message: String = ""
 )
-    
+    data class ArrayOfMessage(
+        val messagelist : List<Message> = listOf()
+    )
 

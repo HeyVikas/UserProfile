@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
-class MainViewModel: ViewModel() {
+class MainViewModel : ViewModel() {
     val FireBaseRepo = FireBaseRepo()
     val profile = Profile()
     var listOfProfile = mutableStateOf(listOf(Profile()))
@@ -16,7 +16,17 @@ class MainViewModel: ViewModel() {
     var mobile = mutableStateOf("")
     var dob = mutableStateOf("")
     var text = mutableStateOf(" ")
-    var msgChat = ChatClass()
+
+
+    var getMychat = mutableStateOf(false)
+    var message = mutableStateOf(Message())
+    var listOfMessage = mutableStateOf(listOf<ArrayOfMessage>())
+
+    var usermobile = mutableStateOf("")
+    var friendsMobile = mutableStateOf("")
+    var msg = mutableStateOf("")
+    var groupId = mutableStateOf("${usermobile} and ${friendsMobile}")
+    var groupIdReverse = mutableStateOf("${friendsMobile} and ${usermobile}")
 
 
     var finalname = mutableStateOf("")
@@ -34,8 +44,6 @@ class MainViewModel: ViewModel() {
             finaldob.value,
 
             )
-
-
     }
 
     fun getData(mobile: String): MutableState<List<Profile>> {
@@ -61,6 +69,23 @@ class MainViewModel: ViewModel() {
         }
         return listOfProfile
     }
+fun sendmessage (){
+    message.value = message.value.copy(
+        message = msg.value
+    )
+    viewModelScope.launch {
+    FireBaseRepo.sendMessage(message.value, groupId.value, groupIdReverse.value)
+    }
+}
+fun getMessage(){
+    viewModelScope.launch {
+        FireBaseRepo.getMessage(groupId.value, groupIdReverse.value).also {
+            if (it != null){
+
+            }
+        }
+    }
+}
 }
 
 

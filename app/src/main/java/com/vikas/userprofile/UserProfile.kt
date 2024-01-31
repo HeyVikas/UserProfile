@@ -115,7 +115,7 @@ fun card(user: Profile,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Email: ${user.gmailId}",
+                    text = "Email: ${user.mobile}",
                     fontSize = 15.sp,
                 )
             }
