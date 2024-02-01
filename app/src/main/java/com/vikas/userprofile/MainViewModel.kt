@@ -20,7 +20,7 @@ class MainViewModel : ViewModel() {
 
     var getMychat = mutableStateOf(false)
     var message = mutableStateOf(Message())
-    var listOfMessage = mutableStateOf(listOf<ArrayOfMessage>())
+    var listOfMessage = mutableStateOf(listOf<Message>())
 
     var usermobile = mutableStateOf("")
     var friendsMobile = mutableStateOf("")
@@ -81,7 +81,7 @@ fun getMessage(){
     viewModelScope.launch {
         FireBaseRepo.getMessage(groupId.value, groupIdReverse.value).also {
             if (it != null){
-
+                listOfMessage.value = it.messagelist
             }
         }
     }

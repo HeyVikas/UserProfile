@@ -54,6 +54,11 @@ class FireBaseRepo {
                 .document(groupIdReverse)
                 .update("messagelist", FieldValue.arrayUnion(message))
         }
+        else{
+            dataBase.collection("Chat")
+                .document(groupId)
+                .set(hashMapOf("messagelist" to message))
+        }
     }
 
     suspend fun getMessage(groupId: String, groupIdReverse: String) : ArrayOfMessage?  {
